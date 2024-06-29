@@ -13,18 +13,11 @@ const RoomPage = () => {
       serverSecret,
       roomId,
       Date.now().toString(),
-      "Preenon Saha"
+      "Enter your name"
     );
     const zc = ZegoUIKitPrebuilt.create(kitToken);
     zc.joinRoom({
       container: element,
-      sharedLinks: [
-        {
-          name: "Copy Link",
-          url: `http://localhost:5175/room/${roomId}`,
-        },
-        // Change Here the URL that will be saved to db
-      ],
       scenario: {
         mode: ZegoUIKitPrebuilt.OneONoneCall,
       },
@@ -44,7 +37,7 @@ const RoomPage = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen flex items-center justify-center">
+    <div className="bg-white min-h-screen flex items-center justify-center">
       <div ref={myMeeting} />
     </div>
   );
