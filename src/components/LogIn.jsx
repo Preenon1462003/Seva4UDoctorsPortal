@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Dots } from "react-activity";
+import "react-activity/dist/library.css";
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -7,6 +10,7 @@ function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -16,7 +20,7 @@ function LoginForm() {
     setIsHovered(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Perform validation
@@ -25,9 +29,29 @@ function LoginForm() {
       return;
     }
 
-    // Redirect to home upon successful login
-    navigate('/dash');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('https://lionfish-app-qvjag.ondigitalocean.app/api/v1/doctor/login', {
+        email: email,
+        password: password
+      });
+      console.log(response.data.doctor);
+      navigate('/dash', { state: response.data.doctor });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-black via-black to-purple-900">
+        <Dots color="white" size={32} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row relative bg-gradient-to-br from-black via-black to-purple-900">
@@ -126,6 +150,7 @@ function LoginForm() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
+              <br />
               <div className="mt-4">
                 <label htmlFor="password" className="sr-only">Password</label>
                 <input
