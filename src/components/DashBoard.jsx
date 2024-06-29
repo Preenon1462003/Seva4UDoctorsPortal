@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import UserProfile from './UserProfile'; // Adjust the import path as needed
-import axios from 'axios';
+
 const DashBoard = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const data = location.state;
-  console.log(data);
   const [user, setUser] = useState(null);
-  
   const [showProfile, setShowProfile] = useState(false);
 
   const timeSlots = [
@@ -24,9 +20,6 @@ const DashBoard = () => {
     // Fetch user details from local storage or state management system
     const storedUser = JSON.parse(localStorage.getItem('userDetails')) || null;
     setUser(storedUser);
-
-    // Perform any other necessary initialization or side effects
-    fetchBooking();
   }, []);
 
   const handleLogout = () => {
@@ -39,25 +32,6 @@ const DashBoard = () => {
     navigate('/home');
   };
 
-  const fetchBooking = async () => {
-    try {
-      const doctorEmail = data.email; // Extract the email directly
-      console.log('Fetching bookings',doctorEmail);
-      const response = await axios.post('https://lionfish-app-qvjag.ondigitalocean.app/api/v1/doctor/viewbookings',{doctorEmail} );
-      console.log(response.data);
-      if (response.data.message === "Booking Not Found") {
-        console.log(response.data);
-        alert("No Booking Found");
-      } else {
-        console.log(response.data);
-        // Handle the bookings data as needed
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  
-  
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-black to-purple-900 text-white">
       <header className="flex items-center justify-between h-16 px-6 border-b border-muted/20 dark:border-muted-foreground/20 relative">
@@ -76,7 +50,7 @@ const DashBoard = () => {
           >
             <path d="M11 2a2 2 0 0 0-2 2v5H4a2 2 0 0 0-2 2v2c0 1.1.9 2 2 2h5v5c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2v-5h5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-5V4a2 2 0 0 0-2-2h-2z"></path>
           </svg>
-          <span>Seva4You</span>
+          <span>MedCare</span>
         </a>
         <div className="flex items-center gap-2">
           <div className="relative">
@@ -137,7 +111,6 @@ const DashBoard = () => {
         <div className="doodle-background"></div>
         <div className="dark-overlay"></div>
         <div className="relative z-10 grid gap-4">
-            <h2 className="text-2xl font-semibold">Hi,  Dr. {data.name}</h2>
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">Patients for Today</h2>
             <div className="flex items-center gap-2 text-muted-foreground">
@@ -158,7 +131,7 @@ const DashBoard = () => {
                 <rect width="18" height="18" x="3" y="4" rx="2"></rect>
                 <path d="M3 10h18"></path>
               </svg>
-              <span>{new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
+              <span>June 29, 2024</span>
             </div>
           </div>
           <div className="grid gap-4">

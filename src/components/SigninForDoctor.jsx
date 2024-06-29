@@ -15,9 +15,12 @@ const SignInForDoctor = () => {
     if (fullName && email && password) {
       const userDetails = { fullName, email, password };
       setUser(userDetails); // Set user details using setUser from context
-      console.log(userDetails);
+
       // Store user details in local storage (optional)
-      navigate('/signup2', { state:  userDetails  });
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
+
+      // Redirect to the next page
+      navigate('/signup2');
     } else {
       alert('Please fill in all the details.');
     }

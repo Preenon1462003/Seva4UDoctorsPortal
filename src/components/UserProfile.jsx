@@ -34,19 +34,19 @@ const UserProfile = ({ onLogout }) => {
         </div>
       ) : (
         <div className="space-y-2">
-          {/* <p className="text-lg font-medium">Not Logged In</p> */}
+          <p className="text-lg font-medium">Not Logged In</p>
           <button
             onClick={handleLogin}
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md"
+            className="w-full bg-blue-500 text-white py-2 rounded-md"
           >
-            Logout
+            Login
           </button>
-          {/* <button
+          <button
             onClick={handleSignUp}
             className="w-full bg-green-500 text-white py-2 rounded-md"
           >
             Sign Up
-          </button> */}
+          </button>
         </div>
       )}
     </div>

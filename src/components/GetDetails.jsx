@@ -1,76 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TimeSlotPicker from './TimeSlotPicker'; // Assuming TimeSlotPicker is in the same directory
-import { Dots } from "react-activity";
-import "react-activity/dist/library.css";
-import axios from 'axios';
 
 const GetDetails = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const name = location.state?.fullName;
-  const email = location.state?.email;
-  const password = location.state?.password;
-
-  console.log('Received Props');
-
   const [registration, setRegistration] = useState('');
   const [specialization, setSpecialization] = useState('');
   const [qualification, setQualification] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Simulating a loading delay
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000); // Adjust the timeout as needed
-  }, []);
-
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     if (registration && specialization && qualification && selectedTime) {
-      console.log(`Name: ${name}`);
-      console.log(`Email: ${email}`);
-      console.log(`Password: ${password}`);
-      console.log(`Registration: ${registration}`);
-      console.log(`Specialization: ${specialization}`);
-      console.log(`Qualification: ${qualification}`);
-      console.log(`Selected Time: ${selectedTime}`);
-      setLoading(true);
-      try {
-        const response = await axios.post('https://lionfish-app-qvjag.ondigitalocean.app/api/v1/doctor/signup', {
-          name: name,
-          email: email,
-          password: password,
-          qualification: qualification,
-          specialization: specialization,
-          registrationNumber: registration,
-          availableTime: selectedTime
-        })
-        console.log(response);
-      }
-      catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
+      const userDetails = {
+        fullName: 'Doctor Name', // Assuming this is already captured
+        email: 'doctor@example.com', // Assuming this is already captured
+        registration,
+        specialization,
+        qualification,
+        selectedTime
+      };
+
+      // Store user details in local storage
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
+
       // Redirect to dashboard
       navigate('/login');
     } else {
-      setLoading(false);
       alert('Please fill in all the details.');
     }
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-black via-black to-purple-900">
-        <Dots color="white" size={32} />
-      </div>
-    );
-  }
 
   return (
     <div className="dark:bg-gradient-to-br from-black via-black to-purple-900 flex min-h-screen w-full font-linux relative">
@@ -188,6 +148,6 @@ const GetDetails = () => {
       </div>
     </div>
   );
-};
+}
 
 export default GetDetails;
