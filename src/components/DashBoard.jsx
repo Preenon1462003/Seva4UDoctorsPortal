@@ -6,18 +6,18 @@ const DashBoard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state;
-  console.log(data);
+  // console.log(data);
   const [user, setUser] = useState(null);
-  
-  const [showProfile, setShowProfile] = useState(false);
 
+  const [showProfile, setShowProfile] = useState(false);
+  const [booking, setBooking] = useState([]);
   const timeSlots = [
     { start: '9:00', end: '11:00' },
     { start: '11:00', end: '13:00' },
-    
+
     { start: '15:00', end: '17:00' },
     { start: '17:00', end: '19:00' },
-   
+
   ];
 
   useEffect(() => {
@@ -35,29 +35,31 @@ const DashBoard = () => {
     localStorage.removeItem('userDetails');
   };
 
-  const handleVideoClick = () => {
-    navigate('/home');
+  const handleVideoClick = (meetingLink) => {
+    window.open(meetingLink, '_blank');
   };
 
   const fetchBooking = async () => {
     try {
+      // alert("Fetching Booking");
       const doctorEmail = data.email; // Extract the email directly
-      console.log('Fetching bookings',doctorEmail);
-      const response = await axios.post('https://lionfish-app-qvjag.ondigitalocean.app/api/v1/doctor/viewbookings',{doctorEmail} );
-      console.log(response.data);
+      console.log('Fetching bookings', doctorEmail);
+      const response = await axios.post('https://lionfish-app-qvjag.ondigitalocean.app/api/v1/doctor/viewbookings', { doctorEmail });
+      // console.log(response.data);
       if (response.data.message === "Booking Not Found") {
-        console.log(response.data);
+        console.log(response.data.doctor);
         alert("No Booking Found");
       } else {
-        console.log(response.data);
         // Handle the bookings data as needed
+        console.log(response.data.doctor);
+        setBooking(response.data.doctor);
       }
     } catch (error) {
       console.log(error);
     }
   };
-  
-  
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-black to-purple-900 text-white">
       <header className="flex items-center justify-between h-16 px-6 border-b border-muted/20 dark:border-muted-foreground/20 relative">
@@ -137,9 +139,9 @@ const DashBoard = () => {
         <div className="doodle-background"></div>
         <div className="dark-overlay"></div>
         <div className="relative z-10 grid gap-4">
-            <h2 className="text-2xl font-semibold">Hi,  Dr. {data.name}</h2>
+          <h2 className="text-2xl font-semibold">Hi,  Dr. {data.name}</h2>
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">Patients for Today</h2>
+            <h2 className="text-2xl font-semibold">Upcomming Appointments</h2>
             <div className="flex items-center gap-2 text-muted-foreground">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -161,44 +163,51 @@ const DashBoard = () => {
               <span>{new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
             </div>
           </div>
-          <div className="grid gap-4">
-            {timeSlots.map((slot, index) => (
+          <div className="grid gap-6">
+            {booking.map((booking, index) => (
               <div
                 key={index}
-                className="rounded-lg border text-card-foreground shadow-sm bg-card dark:bg-background"
-                data-v0-t="card"
+                className="rounded-lg border border-gray-200 shadow-sm bg-white dark:bg-gray-800 p-4 h-32 flex flex-col justify-between"
               >
-                <div className="p-6 grid grid-cols-[1fr_auto] items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4"
-                    >
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span className="font-medium">{slot.start} - {slot.end}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={handleVideoClick}
-                      className="bg-blue-500 text-white py-2 px-4 rounded-md"
-                    >
-                      Video
-                    </button>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-gray-700 dark:text-gray-300"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
+                    {booking.patientEmail}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
+                    {booking.time}
+                  </span>
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => handleVideoClick(booking.meetingLink)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                  >
+                    Join Meet
+                  </button>
                 </div>
               </div>
             ))}
+
           </div>
+
         </div>
       </main>
     </div>
