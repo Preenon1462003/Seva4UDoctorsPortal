@@ -6,13 +6,16 @@ import LogIn from './components/LogIn';
 import DashBoard from './components/DashBoard';
 import HomePage from './components/Pages/Home';
 import RoomPage from './components/Pages/Room';
+import UserProfile from './components/UserProfile';
+import { UserProvider } from './components/UserContext';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      {/* <SigninForDoctor/> */}
+    
+     <UserProvider>
+      
       <Router>
 
         <Routes>
@@ -20,6 +23,9 @@ function App() {
         <Route path="/" element={<SigninForDoctor />} />
         <Route path="/signup2" element={<GetDetails />} />
         <Route path="/login" element={<LogIn />} />
+        <Route path="/dash" element={<DashBoard />} />
+        <Route path="/profile" element={<UserProfile />} />
+
         
 
         <Route path='/home' element={<HomePage/>} />
@@ -31,8 +37,10 @@ function App() {
 
 
       </Router>
-    </>
-  )
+      </UserProvider>
+     
+    
+  );
 }
 
 export default App

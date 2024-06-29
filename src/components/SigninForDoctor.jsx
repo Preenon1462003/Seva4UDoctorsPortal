@@ -1,7 +1,31 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from './UserContext'; // Adjust path as per your project structure
 
 const SignInForDoctor = () => {
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { setUser } = useUser(); // Destructure setUser from useUser hook
+  const navigate = useNavigate();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (fullName && email && password) {
+      const userDetails = { fullName, email, password };
+      setUser(userDetails); // Set user details using setUser from context
+
+      // Store user details in local storage (optional)
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
+
+      // Redirect to the next page
+      navigate('/signup2');
+    } else {
+      alert('Please fill in all the details.');
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-black via-black to-purple-900 relative">
       <style>
@@ -13,8 +37,8 @@ const SignInForDoctor = () => {
             width: 100%;
             height: 100%;
             background: url('/Premium Vector _ Medicine doodle set.jpeg') center/cover no-repeat;
-            opacity: 0.2; /* Adjusted opacity */
-            filter: invert(1) contrast(150%); /* Invert colors and increase contrast */
+            opacity: 0.2;
+            filter: invert(1) contrast(150%);
             z-index: 0;
           }
 
@@ -24,7 +48,7 @@ const SignInForDoctor = () => {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Adjust the darkness */
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1;
           }
 
@@ -32,19 +56,20 @@ const SignInForDoctor = () => {
             position: relative;
             width: 100%;
             height: 90%;
-            max-height: 90%; /* Adjusted maximum height */
+            max-height: 90%;
             overflow: hidden;
           }
 
           @media (min-width: 768px) {
             .video-container {
-              max-height: 80%; /* Adjusted height for split-screen mode */
-              max-width: 85%;            }
+              max-height: 80%;
+              max-width: 85%;
+            }
           }
 
           @media (max-width: 1023px) {
             .video-container {
-              display: none; /* Hide video on smaller screens (split-screen mode) */
+              display: none;
             }
           }
         `}
@@ -59,7 +84,7 @@ const SignInForDoctor = () => {
             loop
             muted
             className="w-full h-full object-cover rounded-[2%] shadow-lg"
-            style={{ aspectRatio: '16/9' }} /* Set aspect ratio to maintain size */
+            style={{ aspectRatio: '16/9' }}
           ></video>
         </div>
       </div>
@@ -81,7 +106,7 @@ const SignInForDoctor = () => {
             </p>
             <p className="text-white">Join us today and let's heal together.</p>
           </div>
-          <form className="space-y-4 mt-6 mb-4 w-full max-w-sm">
+          <form className="space-y-4 mt-6 mb-4 w-full max-w-sm" onSubmit={handleSubmit}>
             <div className="space-y-2 w-full">
               <label
                 className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
@@ -90,9 +115,12 @@ const SignInForDoctor = () => {
                 Full Name
               </label>
               <input
-                className="flex h-10 w-full border border-input text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-white text-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-opacity-50"
+                className="flex h-10 w-full border border-input text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-white text-black rounded-md px-3 py-2"
                 id="full-name"
                 placeholder="Enter your full name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
               />
             </div>
             <div className="space-y-2 w-full">
@@ -103,10 +131,13 @@ const SignInForDoctor = () => {
                 Email
               </label>
               <input
-                className="flex h-10 w-full border border-input text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-white text-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-opacity-50"
+                className="flex h-10 w-full border border-input text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-white text-black rounded-md px-3 py-2"
                 id="email"
                 placeholder="Enter your email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
             <div className="space-y-2 w-full">
@@ -117,23 +148,27 @@ const SignInForDoctor = () => {
                 Password
               </label>
               <input
-                className="flex h-10 w-full border border-input text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-white text-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-opacity-50"
+                className="flex h-10 w-full border border-input text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-white text-black rounded-md px-3 py-2"
                 id="password"
                 placeholder="Enter your password"
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
-          </form>
-          <Link to="/signup2">
-            <button className="inline-flex items-center justify-center whitespace-nowrap text-base font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black hover:bg-gray-200 hover-scale h-8 w-32 rounded-md px-3 py-1 mt-4">
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center whitespace-nowrap text-base font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black hover:bg-gray-200 hover-scale h-8 w-32 rounded-md px-3 py-1 mt-4"
+            >
               Next Page
             </button>
-          </Link>
+          </form>
           <div className="text-center">
-                <Link to="/login" className="inline-flex text-white text-sm block mt-2">
-                  Already have an account? <span className="underline">Log In</span>
-                </Link>
-              </div>
+            <Link to="/login" className="inline-flex text-white text-sm block mt-2">
+              Already have an account? <span className="underline">Log In</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

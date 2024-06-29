@@ -1,54 +1,34 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import TimeSlotPicker from './TimeSlotPicker'; // Assuming TimeSlotPicker is in the same directory
 
-// Custom component for time slot picker
-const TimeSlotPicker = ({ selectedTime, onSelectTime }) => {
-  // Mock time slots for demonstration
-  const timeSlots = [
-    '09:00 AM', '12:00 PM', '03:00 PM', '06:00 PM', '09:00 PM'
-  ];
-
-  return (
-    <div className="space-y-3">
-      <label
-        className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
-        htmlFor="availableTime"
-      >
-        Available Time
-      </label>
-      <div className="flex flex-wrap gap-2">
-        {timeSlots.map((time, index) => (
-          <button
-            key={index}
-            type="button" // Prevent form submission
-            className={`rounded-md px-4 py-2 text-base ring-offset-background file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-              selectedTime === time ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'
-            }`}
-            onClick={() => onSelectTime(time)}
-          >
-            {time}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-function GetDetails() {
+const GetDetails = () => {
   const [registration, setRegistration] = useState('');
   const [specialization, setSpecialization] = useState('');
   const [qualification, setQualification] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Perform validation
     if (registration && specialization && qualification && selectedTime) {
-      // Redirect or perform other actions upon successful form submission
-      window.location.href = '/login'; // Redirect to login page
+      const userDetails = {
+        fullName: 'Doctor Name', // Assuming this is already captured
+        email: 'doctor@example.com', // Assuming this is already captured
+        registration,
+        specialization,
+        qualification,
+        selectedTime
+      };
+
+      // Store user details in local storage
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
+
+      // Redirect to dashboard
+      navigate('/login');
     } else {
-      alert('Please fill in all the details.'); // Or show an error message
+      alert('Please fill in all the details.');
     }
   };
 
@@ -56,13 +36,6 @@ function GetDetails() {
     <div className="dark:bg-gradient-to-br from-black via-black to-purple-900 flex min-h-screen w-full font-linux relative">
       <style>
         {`
-          /* Custom styles for input fields */
-          .input-white {
-            background-color: white; /* White background */
-            color: black; /* Black text */
-          }
-          
-          /* Background doodle */
           .doodle-background {
             position: absolute;
             top: 0;
@@ -70,42 +43,19 @@ function GetDetails() {
             width: 100%;
             height: 100%;
             background: url('/Premium Vector _ Medicine doodle set.jpeg') center/cover no-repeat;
-            opacity: 0.2; /* Adjusted opacity */
-            filter: invert(1) contrast(150%); /* Invert colors and increase contrast */
+            opacity: 0.2;
+            filter: invert(1) contrast(150%);
             z-index: 0;
           }
 
-          /* Dark overlay */
           .dark-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7); /* Adjust the darkness */
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1;
-          }
-
-          .video-container {
-            width: 100%;
-            height: 100%;
-            max-height: 77%; /* Default height */
-            max-width: 65%; /* Default width */
-          }
-
-          @media (min-width: 768px) {
-            .split-screen .video-container {
-              max-height: 20%; /* Adjusted height for split-screen mode */
-              max-width: 85%; /* Adjusted width for split-screen mode */
-            }
-          }
-
-          /* Button hover animation */
-          .hover-scale {
-            transition: transform 0.2s ease-in-out;
-          }
-          .hover-scale:hover {
-            transform: scale(0.95);
           }
         `}
       </style>
@@ -119,7 +69,7 @@ function GetDetails() {
             loop
             muted
             className="w-full h-full object-cover rounded-[2%] shadow-lg"
-            style={{ aspectRatio: '15/16' }}
+            style={{ aspectRatio: '20/9' }}
           ></video>
         </div>
       </div>
@@ -187,21 +137,13 @@ function GetDetails() {
             <TimeSlotPicker selectedTime={selectedTime} onSelectTime={setSelectedTime} />
             <div className="space-y-3">
               <button
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black hover:bg-gray-200 hover-scale h-10 px-4 w-full mt-4"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-br from-black via-black to-purple-900 px-8 py-3 text-lg font-semibold text-white hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50"
                 type="submit"
               >
                 Sign Up
               </button>
             </div>
           </form>
-          <div className="text-center">
-            <p className="text-white">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-white hover:underline">
-                Log In
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>

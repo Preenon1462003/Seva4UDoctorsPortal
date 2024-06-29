@@ -26,7 +26,7 @@ function LoginForm() {
     }
 
     // Redirect to home upon successful login
-    navigate('/home');
+    navigate('/dash');
   };
 
   return (
